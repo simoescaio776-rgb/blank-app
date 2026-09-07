@@ -4,7 +4,7 @@ from google import genai
 st.set_page_config(page_title="Gauss & Badeco")
 
 # pega sua chave AQ que você já colocou
-api_key = st.secrets["AQ.Ab8RN6K3ezKPNegbSIcAoqss8y5KOJ5PTqGTFt_Y33iVvvmXww"]
+api_key = st.secrets["GEMINI_KEY"]
 client = genai.Client(api_key=api_key)
 
 st.title("Gauss & Badeco - Tutores")
