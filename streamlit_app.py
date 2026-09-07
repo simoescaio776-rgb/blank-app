@@ -2,8 +2,9 @@ import streamlit as st
 from google import genai
 
 st.set_page_config(page_title="Gauss & Badeco")
-api_key = st.secrets["GEMINI_KEY"]
-client = genai.Client(api_key=api_key)
+
+# Pega a chave que você já trocou
+client = genai.Client(api_key=st.secrets["GEMINI_KEY"])
 
 st.title("Gauss & Badeco - Tutores")
 
@@ -14,16 +15,18 @@ for m in st.session_state.messages:
     with st.chat_message(m["role"]):
         st.markdown(m["content"])
 
-prompt = st.chat_input("Pergunte algo pro Gauss...")
+# ESSE IF AQUI É O QUE FALTA NA SUA FOTO LINHA 24
+pergunta = st.chat_input("Pergunte algo pro Gauss...")
 
-if prompt:
-    st.session_state.messages.append({"role": "user", "content": prompt})
+if pergunta:
+    st.session_state.messages.append({"role": "user", "content": pergunta})
     with st.chat_message("user"):
-        st.markdown(prompt)
+        st.markdown(pergunta)
+    
     with st.chat_message("assistant"):
-        response = client.models.generate_content(
+        resposta = client.models.generate_content(
             model="gemini-1.5-flash",
-            contents=f"Voce e o Gauss, tutor de calculo. Explique: {prompt}"
+            contents=f"Voce e o Gauss, tutor de calculo. Responda curto: {pergunta}"
         )
-        st.markdown(response.text)
-        st.session_state.messages.append({"role": "assistant", "content": response.text})
+        st.markdown(resposta.text)
+        st.session_state.messages.append({"role": "assistant", "content": resposta.text})
