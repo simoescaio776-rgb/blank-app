@@ -1,32 +1,32 @@
 import streamlit as st
-import google.generativeai as genai
+from google import genai
 
-API_KEY = "AQ.Ab8RN6J7dZSMvWw572f-M58o9JSnywLYcEUfvuabpRdt1S1xTQ"
+st.set_page_config(page_title="Gauss & Badeco")
 
-genai.configure(api_key=API_KEY)
-model = genai.GenerativeModel("gemini-1.5-flash")
+# pega sua chave AQ que você já colocou
+api_key = st.secrets["AQ.Ab8RN6K3ezKPNegbSIcAoqss8y5KOJ5PTqGTFt_Y33iVvvmXww"]
+client = genai.Client(api_key=api_key)
 
-st.set_page_config(page_title="Gauss & Badeco", page_icon="🤖")
 st.title("Gauss & Badeco - Tutores")
 
-if "chat" not in st.session_state:
-    st.session_state.chat = []
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-for m in st.session_state.chat:
+for m in st.session_state.messages:
     with st.chat_message(m["role"]):
-        st.write(m["text"])
+        st.markdown(m["content"])
 
-pergunta = st.chat_input("Pergunte algo pro Gauss...")
-
-if pergunta:
-    st.session_state.chat.append({"role": "user", "text": pergunta})
+prompt = st.chat_input("Pergunte algo pro Gauss...")
+if prompt:
+    st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
-        st.write(pergunta)
-    
-    prompt = f"Voce e o Gauss e o Badeco, tutores. Responda: {pergunta}"
-    resposta = model.generate_content(prompt)
-    
+        st.markdown(prompt)
+
     with st.chat_message("assistant"):
-        st.write(resposta.text)
-    
-    st.session_state.chat.append({"role": "assistant", "text": resposta.text})
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=f"Você é o Gauss, tutor de cálculo. Explique de forma simples: {prompt}"
+        )
+        st.markdown(response.text)
+        st.session_state.messages.append({"role": "assistant", "content": response.text})
+
