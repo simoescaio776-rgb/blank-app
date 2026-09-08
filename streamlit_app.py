@@ -5,7 +5,7 @@ client = genai.Client(api_key=st.secrets["GOOGLE_API_KEY"])
 
 def perguntar_gauss(pergunta):
     resposta = client.models.generate_content(
-        model="gemini-2.0-flash",
+        model="gemini-2.5-flash",
         contents=f"Voce e o Gauss, tutor de calculo. Responda curto: {pergunta}"
     )
     return resposta.text
