@@ -25,7 +25,7 @@ if pergunta:
     
     with st.chat_message("assistant"):
         resposta = client.models.generate_content(
-            model="gemini-1.5-flash",
+            model="gemini-2.0-flash",
             contents=f"Voce e o Gauss, tutor de calculo. Responda curto: {pergunta}"
         )
         st.markdown(resposta.text)
