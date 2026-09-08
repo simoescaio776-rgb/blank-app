@@ -4,7 +4,7 @@ import glob
 
 st.set_page_config(page_title="Gauss & Badeco", page_icon="📐")
 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-model = genai.GenerativeModel("gemini-1.5-flash-8b")
+model = genai.GenerativeModel("gemini-3.6-flash-8b")
 
 # Carrega conhecimento
 texto_conhecimento = ""
