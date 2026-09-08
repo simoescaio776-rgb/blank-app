@@ -4,42 +4,30 @@ import glob
 
 st.set_page_config(page_title="Gauss & Badeco", page_icon="📐")
 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-model = genai.GenerativeModel("gemini-3.6-flash")
+model = genai.GenerativeModel("gemini-1.5-flash-8b")
 
-# Carrega conhecimento (se tiver)
+# Carrega conhecimento
 texto_conhecimento = ""
 try:
     for arquivo in glob.glob("conhecimento/*.txt"):
         with open(arquivo, "r", encoding="utf-8") as f:
             texto_conhecimento += f.read()[:2000] + "\n"
 except:
-    texto_conhecimento = ""
+    pass
 
-st.title("Gauss & Badeco - Matemática + Engenharia")
+st.title("Gauss & Badeco")
 
-pergunta = st.text_input("Faça sua pergunta:")
+pergunta = st.text_input("Sua dúvida de matemática / engenharia:")
 
-if pergunta:
-    prompt_gauss = f"""
-    Você é o GAUSS, especialista em Matemática e Engenharia.
-    CONHECIMENTO EXTRA: {texto_conhecimento}
-    REGRA MAIS IMPORTANTE: Responda DIRETAMENTE a pergunta do usuário: {pergunta}
-    Seja técnico e formal.
-    """
-    prompt_badeco = f"""
-    Você é o BADECO, mestre de obras que virou professor de Matemática e Engenharia.
-    CONHECIMENTO EXTRA: {texto_conhecimento}
-    REGRA MAIS IMPORTANTE: Responda DIRETAMENTE a pergunta do usuário: {pergunta}
-    Seja prático, simples, com exemplo de obra.
-    """
+escolha = st.radio("Quem vai responder?", ["🎓 Gauss (Técnico)", "😎 Badeco (Prático da Obra)"])
 
-    r1 = model.generate_content(prompt_gauss)
-    r2 = model.generate_content(prompt_badeco)
+if st.button("Responder") and pergunta:
+    if "Gauss" in escolha:
+        prompt = f"Você é GAUSS, professor formal de Matemática e Engenharia. Conhecimento extra: {texto_conhecimento}. Responda diretamente: {pergunta}"
+    else:
+        prompt = f"Você é BADECO, mestre de obras que virou professor de Matemática e Engenharia, fala simples com exemplo de obra. Conhecimento extra: {texto_conhecimento}. Responda diretamente: {pergunta}"
 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.subheader("🎓 Gauss")
-        st.write(r1.text)
-    with col2:
-        st.subheader("😎 Badeco")
-        st.write(r2.text)
+    with st.spinner("Pensando..."):
+        r = model.generate_content(prompt)
+        st.markdown("### Resposta:")
+        st.write(r.text)
